@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+  registery_ui:
+    image: joxit/docker-registry-ui:static
+    ports:
+      - 127.0.0.1:3001:80
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    environment:
+      - REGISTRY_TITLE=Exlinetr Private Docker Registry
+      - URL=https://registery.exlinetr.com
+      - DELETE_IMAGES=true
+    networks:
+      - registry-ui-net
+    depends_on:
+      - registery
+
+  registry:
+    image: registry:2.7.1
+    ports:
+      - 127.0.0.1:5000:5000
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    networks:
+      - registry-ui-net
+    volumes:
+      - /mnt/storage:/var/lib/registry
+    configs:
+      - source: registery_config
+        target: /etc/docker/registry/config.yml
+      - source: registery_htpasswd
+        target: /etc/docker/registry/htpasswd
+
+configs:
+  registery_config:
+    file: ../configs/registery.auth.config.yml
+  registery_htpasswd:
+    file: ../configs/registery.passwrd
+
+networks:
+  registry-ui-net:
+
+volumes:
+  registrydata:
