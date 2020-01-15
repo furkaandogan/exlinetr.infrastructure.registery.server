@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 
 services:
   ui:
@@ -12,11 +12,12 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik_network"
-        - "traefik.http.routers.registery_ui.service=registery_ui"
-        - "traefik.http.routers.registery_ui.rule=Host(`registery.exlinetr.com`)"
-        - "traefik.http.routers.registery_ui.entrypoints=web"
-        - "traefik.http.services.registery_ui.loadbalancer.server.port=80"
-        - "traefik.http.services.registery_ui.loadbalancer.server.scheme=http"
+        - "traefik.http.routers.registery-ui.service=registery-ui"
+        - "traefik.http.routers.registery-ui.rule=Host(`registery.exlinetr.com`)"
+        - "traefik.http.routers.registery-ui.entrypoints=web"
+        - "traefik.http.services.registery-ui.loadbalancer.server.port=80"
+        - "traefik.http.services.registery-ui.loadbalancer.server.scheme=http"
+        - "traefik.http.middlewares.registery-ui.basicauth.users=furkaandogan:bCEV454DJk7dI"
     environment:
       - REGISTRY_TITLE=Exlinetr Private Docker Registry
       - URL=https://registery.exlinetr.com
@@ -36,11 +37,11 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik_network"
-        - "traefik.http.routers.registery_store.service=registery_store"
+        - "traefik.http.routers.registery-store.service=registery-store"
         - "traefik.http.routers.registery_store.rule=Host(`registery.exlinetr.com`)&&PathPrefix(`/v2`)"
         - "traefik.http.routers.registery_store.entrypoints=web"
-        - "traefik.http.services.registery_store.loadbalancer.server.port=5000"
-        - "traefik.http.services.registery_store.loadbalancer.server.scheme=http"
+        - "traefik.http.services.registery-store.loadbalancer.server.port=5000"
+        - "traefik.http.services.registery-store.loadbalancer.server.scheme=http"
     networks:
       - registry-ui-net
       - traefik_network
