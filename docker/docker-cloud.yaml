@@ -1,63 +1,35 @@
 version: '3.7'
-
 services:
   ui:
-    image: joxit/docker-registry-ui:static
-    ports:
-      - 3001:80
+    image: sonatype/nexus3:3.22.1
     deploy:
-      replicas: 2
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
       restart_policy:
         condition: on-failure
+        max_attempts: 0
+        delay: 5s
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik_network"
-        - "traefik.http.routers.registery-ui.service=registery-ui"
-        - "traefik.http.routers.registery-ui.rule=Host(`registery.exlinetr.com`)"
-        - "traefik.http.routers.registery-ui.entrypoints=web"
-        - "traefik.http.services.registery-ui.loadbalancer.server.port=80"
-        - "traefik.http.services.registery-ui.loadbalancer.server.scheme=http"
-        - "traefik.http.middlewares.registery-ui.basicauth.users=furkaandogan:bCEV454DJk7dI"
-    environment:
-      - REGISTRY_TITLE=Exlinetr Private Docker Registry
-      - URL=https://registery.exlinetr.com
-      - DELETE_IMAGES=true
-    networks:
-      - registry-ui-net
-      - traefik_network
-    depends_on:
-      - registery
-
-  store:
-    image: registry:2.7.1
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-      labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=traefik_network"
-        - "traefik.http.routers.registery-store.service=registery-store"
-        - "traefik.http.routers.registery_store.rule=Host(`registery.exlinetr.com`)&&PathPrefix(`/v2`)"
-        - "traefik.http.routers.registery_store.entrypoints=web"
-        - "traefik.http.services.registery-store.loadbalancer.server.port=5000"
-        - "traefik.http.services.registery-store.loadbalancer.server.scheme=http"
-    networks:
-      - registry-ui-net
-      - traefik_network
+        - "traefik.http.routers.registery.service=registery"
+        - "traefik.http.routers.registery.rule=Host(`registery.exlinetr.com`)"
+        - "traefik.http.routers.registery.entrypoints=web"
+        - "traefik.http.middlewares.https-to-http-proxy.headers.customrequestheaders.X-Forwarded-Proto=https"
+        - "traefik.http.routers.registery.middlewares=https-to-http-proxy"
+        - "traefik.http.services.registery.loadbalancer.server.port=8081"
+        - "traefik.http.services.registery.loadbalancer.server.scheme=http"
     volumes:
-      - /mnt/storage:/var/lib/registry
-    # configs:
-    #   - source: registery_config
-    #     target: /etc/docker/registry/config.yml
-    #   - source: registery_htpasswd
-    #     target: /etc/docker/registry/htpasswd
-
+      - type: bind
+        source: /mnt/storage/exlinetr/nexus
+        target: /nexus-data
+    networks:
+      - registry-ui-net
+      - traefik_network
 
 networks:
   registry-ui-net:
   traefik_network:
     external: true
-
-volumes:
-  registrydata:

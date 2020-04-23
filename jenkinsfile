@@ -1,0 +1,24 @@
+@Library("gallifrey") _
+
+docker_stack_deployment_pipeline {
+  application=[
+    name:'svayp.card.consumers.bulbasaur',
+    version:'1.0'
+  ]
+  jenkins=[
+    agent:[
+        label:'exlinetr-docker-slave'
+    ]
+  ]
+  docker=[
+    stack:[
+      composefile:'docker/docker-cloud.yml',
+      clusters:[
+        svayp_cluster:[
+          address:'tcp://167.86.67.139:2376',
+          credentialId:'docker-master-01'
+        ]
+      ]
+    ]
+  ]
+}
