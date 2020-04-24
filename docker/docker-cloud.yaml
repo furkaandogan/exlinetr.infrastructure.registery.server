@@ -30,6 +30,8 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
+    volume:
+
     networks:
       - registry-net
       - traefik_network
@@ -55,7 +57,7 @@ services:
 
 configs:
   nginx_config:
-    name: "exlinetr_registery_proxy_nginx.config"
+    name: "exlinetr_registery_proxy_nginx_v${VERSION}.config"
     file: nginx.conf
 
 networks:
