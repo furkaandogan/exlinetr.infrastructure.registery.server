@@ -27,6 +27,9 @@ services:
         # - "traefik.http.services.registery-docker.loadbalancer.server.scheme=http"
         # - "traefik.http.routers.registery.middlewares=https-to-http-proxy"
         # - "traefik.http.middlewares.https-to-http-proxy.headers.customrequestheaders.X-Forwarded-Proto=https"
+    configs:
+      - source: nginx_config
+        target: /etc/nginx/nginx.conf
     networks:
       - registry-net
       - traefik_network
