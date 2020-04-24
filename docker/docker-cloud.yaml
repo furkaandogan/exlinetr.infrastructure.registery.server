@@ -50,9 +50,10 @@ services:
       - registry-net
       - traefik_network
 
-config:
-  nginx:
-    form_file: nginx.conf
+configs:
+  nginx_config:
+    name: "exlinetr_registery_proxy_nginx.config"
+    file: nginx.conf
 
 networks:
   registry-net:
