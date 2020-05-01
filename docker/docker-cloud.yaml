@@ -30,7 +30,6 @@ services:
     configs:
       - source: nginx_config
         target: /etc/nginx/nginx.conf
-    volume:
 
     networks:
       - registry-net
