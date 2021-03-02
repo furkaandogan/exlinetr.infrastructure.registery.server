@@ -1,1 +1,1 @@
-# exlinetr.docker.registery
+# exlinetr.registery.server
